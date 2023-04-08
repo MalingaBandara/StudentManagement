@@ -31,7 +31,7 @@ public class SignupFormController {
         String password = new PasswordManager().encrypt(txtPassword.getText().trim());
 
 
-        User u = new User( email, firstName, lastName, password ); // new user object to save user data
+        User u = new User(firstName, lastName,  email, password ); // new user object to save user data
 
             // Save the data on database
                 try {
