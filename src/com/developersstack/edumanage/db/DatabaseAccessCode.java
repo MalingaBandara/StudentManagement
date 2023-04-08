@@ -1,5 +1,6 @@
 package com.developersstack.edumanage.db;
 
+import com.developersstack.edumanage.model.Student;
 import com.developersstack.edumanage.model.User;
 
 import java.sql.Connection;
@@ -48,7 +49,45 @@ public class DatabaseAccessCode {
 
                 }
 
-
         // User manage ===============>
+
+
+        // Student manage ===============>
+
+                // save student
+                public boolean saveStudent(Student student) throws SQLException,ClassNotFoundException   {
+
+                    Connection connection = DbConnection.getInstance().getConnection();
+
+                    PreparedStatement stm = connection.prepareStatement(" INSERT INTO student VALUES (?, ?, ?, ?)");
+
+                    stm.setString( 1, student.getStudentId() );
+                    stm.setString( 2, student.getFullName() );
+                    stm.setObject( 3, student.getDateOfBirth() );
+                    stm.setString( 4, student.getAddress() );
+
+                    return stm.executeUpdate() > 0;
+
+                }
+
+
+                // find student last id
+                public String findStudentLastId (Student student) throws SQLException,ClassNotFoundException   {
+
+                    Connection connection = DbConnection.getInstance().getConnection();
+
+                    PreparedStatement stm = connection.prepareStatement(" SELECT student_id FROM student ORDER BY CAST(SUBSTRING(student_id, 3) AS UNSIGNED) DESC LIMIT 1 ");
+
+                    ResultSet rst = stm.executeQuery();
+
+                    if ( rst.next() ) {
+                        return rst.getString( 1 );
+                    }
+
+                    return "S-1";
+
+                }
+
+        // Student manage ===============>
 
 }
