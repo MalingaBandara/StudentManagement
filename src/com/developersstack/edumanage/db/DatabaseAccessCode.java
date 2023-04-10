@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class DatabaseAccessCode {
 
@@ -125,6 +126,37 @@ public class DatabaseAccessCode {
                     stm.setString( 1, student.getStudentId() );
 
                     return stm.executeUpdate() > 0;
+
+                }
+
+
+                // find all student
+                public ArrayList<Student> findAllStudents (String searchText) throws SQLException,ClassNotFoundException   {
+
+                    searchText = "%" + searchText + "%";
+
+                    Connection connection = DbConnection.getInstance().getConnection();
+
+                    PreparedStatement stm = connection.prepareStatement(" SELECT * FROM student WHERE full_name LIKE ? OR  address LIKE ?");
+                    stm.setString( 1, searchText );
+                    stm.setObject( 2, searchText );
+
+                    ResultSet rst = stm.executeQuery();
+
+                    ArrayList<Student> studentsList = new ArrayList<>(); // create array list for save students
+
+
+
+                    while ( rst.next() ) {
+                        studentsList.add( new Student (
+                                                rst.getString(1),
+                                                rst.getString(2),
+                                                rst.getDate(3),
+                                                rst.getString(4)
+                        ));
+                    }
+
+                    return studentsList;
 
                 }
 
