@@ -113,7 +113,20 @@ public class DatabaseAccessCode {
 
 
                 // Update student
+                public boolean updateStudent(Student student) throws SQLException,ClassNotFoundException   {
 
+                    Connection connection = DbConnection.getInstance().getConnection();
+
+                    PreparedStatement stm = connection.prepareStatement(" UPDATE student SET full_name=?, dob=?, address=? WHERE student_id=? ");
+
+                    stm.setString( 2, student.getFullName() );
+                    stm.setObject( 3, student.getDateOfBirth() );
+                    stm.setString( 4, student.getAddress() );
+                    stm.setString( 1, student.getStudentId() );
+
+                    return stm.executeUpdate() > 0;
+
+                }
 
 
         // Student manage ===============>
