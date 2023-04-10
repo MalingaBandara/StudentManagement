@@ -73,7 +73,7 @@ public class DatabaseAccessCode {
 
 
                 // find student last id
-                public String findStudentLastId (Student student) throws SQLException,ClassNotFoundException   {
+                public String findStudentLastId () throws SQLException,ClassNotFoundException   {
 
                     Connection connection = DbConnection.getInstance().getConnection();
 
