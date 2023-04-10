@@ -1,7 +1,8 @@
 package com.developersstack.edumanage.controller;
 
-import com.developersstack.edumanage.db.DatabaseAccessCode;
-import com.developersstack.edumanage.model.Teacher;
+import com.developersstack.edumanage.entity.Teacher;
+import com.developersstack.edumanage.repo.custom.TeacherRepo;
+import com.developersstack.edumanage.repo.custom.impl.TeacherRepoImpl;
 import com.developersstack.edumanage.view.tm.TeacherTm;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,6 +34,8 @@ public class TeacherFormController {
     public TextField txtContact;
 
     String searchText="";
+
+    private TeacherRepo teacherRepo = new TeacherRepoImpl(); // teacher repo
 
     public void initialize(){
 
@@ -72,7 +75,7 @@ public class TeacherFormController {
 
         try {
 
-            for (Teacher t : new DatabaseAccessCode().findAllTeachers(searchText)
+            for (Teacher t : teacherRepo.findAllTeachers(searchText)
             ) {
 
                     Button btn = new Button("Delete");
@@ -95,7 +98,7 @@ public class TeacherFormController {
 
                             try{
 
-                                boolean isDeleted = new DatabaseAccessCode().deleteTeacher(t.getCode());
+                                boolean isDeleted = teacherRepo.deleteTeacher(t.getCode());
                                 if (isDeleted){
                                     new Alert(Alert.AlertType.INFORMATION, "Deleted!").show();
                                     setTableData(searchText);
@@ -133,7 +136,7 @@ public class TeacherFormController {
 
                     try {
 
-                        boolean isSaved = new DatabaseAccessCode().saveTeacher(teacher);
+                        boolean isSaved = teacherRepo.saveTeacher(teacher);
 
                         if (isSaved){
                             setTeacherId();
@@ -154,11 +157,11 @@ public class TeacherFormController {
 
             try {
 
-                Teacher selectedTeacher = new DatabaseAccessCode().findTeacher(txtId.getText());
+                Teacher selectedTeacher = teacherRepo.findTeacher(txtId.getText());
 
                 if (null != selectedTeacher) {
 
-                    boolean isUpdated = new DatabaseAccessCode().updateTeachr(teacher);
+                    boolean isUpdated = teacherRepo.updateTeachr(teacher);
 
                     if (isUpdated) {
                         new Alert(Alert.AlertType.INFORMATION, "Updated").show();
@@ -192,7 +195,7 @@ public class TeacherFormController {
 
         try {
 
-            String selectedId = new DatabaseAccessCode().findTeacherLastId();
+            String selectedId = teacherRepo.findTeacherLastId();
 
             if ( null != selectedId ) {
 

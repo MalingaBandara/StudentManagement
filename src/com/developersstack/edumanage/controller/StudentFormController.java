@@ -1,8 +1,8 @@
 package com.developersstack.edumanage.controller;
 
-import com.developersstack.edumanage.db.Database;
-import com.developersstack.edumanage.db.DatabaseAccessCode;
-import com.developersstack.edumanage.model.Student;
+import com.developersstack.edumanage.entity.Student;
+import com.developersstack.edumanage.repo.custom.StudentRepo;
+import com.developersstack.edumanage.repo.custom.impl.StudentRepoImpl;
 import com.developersstack.edumanage.view.tm.StudentTm;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -39,6 +39,8 @@ public class StudentFormController {
     public TextField txtSearch;
 
     String searchText="";
+
+    private StudentRepo studentRepo = new StudentRepoImpl(); // student repo
 
     public void initialize(){
 
@@ -78,7 +80,7 @@ public class StudentFormController {
 
         try {
 
-                for ( Student st : new DatabaseAccessCode().findAllStudents(searchText) ) {
+                for ( Student st : studentRepo.findAllStudents(searchText) ) {
                         Button btn = new Button("Delete");
                         StudentTm tm = new StudentTm(
                                 st.getStudentId(),
@@ -98,7 +100,7 @@ public class StudentFormController {
                             if (buttonType.get().equals(ButtonType.YES)) {
                                 try{
 
-                                    boolean isDeleted = new DatabaseAccessCode().deleteStudent(st.getStudentId());
+                                    boolean isDeleted = studentRepo.deleteStudent(st.getStudentId());
                                         if (isDeleted){
                                             new Alert(Alert.AlertType.INFORMATION, "Student Deleted").show();
                                             setStudentId();
@@ -132,7 +134,7 @@ public class StudentFormController {
 
         try {
 
-            String selectedId = new DatabaseAccessCode().findStudentLastId();
+            String selectedId = studentRepo.findStudentLastId();
 
                 if ( null != selectedId ) {
 
@@ -171,7 +173,7 @@ public class StudentFormController {
 
                         try {
 
-                            boolean isSaved = new DatabaseAccessCode().saveStudent(student);
+                            boolean isSaved = studentRepo.saveStudent(student);
 
                                 if (isSaved){
                                     setStudentId();
@@ -191,11 +193,11 @@ public class StudentFormController {
 
                         try {
 
-                            Student selectedStudent = new DatabaseAccessCode().findStudent(txtId.getText());
+                            Student selectedStudent = studentRepo.findStudent(txtId.getText());
 
                             if ( null != selectedStudent) {
 
-                                boolean isUpdated = new DatabaseAccessCode().updateStudent(student);
+                                boolean isUpdated = studentRepo.updateStudent(student);
 
                                     if (isUpdated){
                                         new Alert(Alert.AlertType.INFORMATION, "Updated").show();
