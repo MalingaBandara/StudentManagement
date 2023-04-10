@@ -161,6 +161,19 @@ public class DatabaseAccessCode {
                 }
 
 
+                // Delete student
+                public boolean deleteStudent(String studentId) throws SQLException,ClassNotFoundException   {
+
+                    Connection connection = DbConnection.getInstance().getConnection();
+
+                    PreparedStatement stm = connection.prepareStatement(" DELETE FROM student WHERE student_id=? ");
+                    stm.setString( 1, studentId );
+
+                    return stm.executeUpdate() > 0;
+
+                }
+
+
         // Student manage ===============>
 
 }
