@@ -88,6 +88,34 @@ public class DatabaseAccessCode {
 
                 }
 
+
+                // find student
+                public Student findStudent (String student_id) throws SQLException,ClassNotFoundException   {
+
+                    Connection connection = DbConnection.getInstance().getConnection();
+
+                    PreparedStatement stm = connection.prepareStatement(" SELECT * FROM student WHERE student_id=? ");
+
+                    ResultSet rst = stm.executeQuery();
+
+                    if ( rst.next() ) {
+                        return new Student(
+                                rst.getString(1),
+                                rst.getString(2),
+                                rst.getDate(3),
+                                rst.getString(4)
+                        );
+                    }
+
+                    return null;
+
+                }
+
+
+                // Update student
+
+
+
         // Student manage ===============>
 
 }
