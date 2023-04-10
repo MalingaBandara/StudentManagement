@@ -97,6 +97,7 @@ public class DatabaseAccessCode {
                     Connection connection = DbConnection.getInstance().getConnection();
 
                     PreparedStatement stm = connection.prepareStatement(" SELECT * FROM student WHERE student_id=? ");
+                    stm.setString(1, student_id);
 
                     ResultSet rst = stm.executeQuery();
 
@@ -197,12 +198,12 @@ public class DatabaseAccessCode {
                 }
 
 
-                // find student last id
-                public String findStudentLastId () throws SQLException,ClassNotFoundException   {
+                // find teacher last id
+                public String findTeacherLastId () throws SQLException,ClassNotFoundException   {
 
                     Connection connection = DbConnection.getInstance().getConnection();
 
-                    PreparedStatement stm = connection.prepareStatement(" SELECT student_id FROM student ORDER BY CAST(SUBSTRING(student_id, 3) AS UNSIGNED) DESC LIMIT 1 ");
+                    PreparedStatement stm = connection.prepareStatement(" SELECT teacher_code FROM teacher ORDER BY CAST(SUBSTRING(teacher_code, 3) AS UNSIGNED) DESC LIMIT 1 ");
 
                     ResultSet rst = stm.executeQuery();
 
@@ -210,25 +211,26 @@ public class DatabaseAccessCode {
                         return rst.getString( 1 );
                     }
 
-                    return "S-1";
+                    return "T-1";
 
                 }
 
 
-                // find student
-                public Student findStudent (String student_id) throws SQLException,ClassNotFoundException   {
+                // find teacher
+                public Teacher findTeacher (String teacherId) throws SQLException,ClassNotFoundException   {
 
                     Connection connection = DbConnection.getInstance().getConnection();
 
-                    PreparedStatement stm = connection.prepareStatement(" SELECT * FROM student WHERE student_id=? ");
+                    PreparedStatement stm = connection.prepareStatement(" SELECT * FROM teacher WHERE teacher_code=? ");
+                    stm.setString(1, teacherId);
 
                     ResultSet rst = stm.executeQuery();
 
                     if ( rst.next() ) {
-                        return new Student(
+                        return new Teacher(
                                 rst.getString(1),
                                 rst.getString(2),
-                                rst.getDate(3),
+                                rst.getString(3),
                                 rst.getString(4)
                         );
                     }
@@ -238,61 +240,61 @@ public class DatabaseAccessCode {
                 }
 
 
-                // Update student
-                public boolean updateStudent(Student student) throws SQLException,ClassNotFoundException   {
+                // Update teacher
+                public boolean updateTeachr(Teacher teacher) throws SQLException,ClassNotFoundException   {
 
                     Connection connection = DbConnection.getInstance().getConnection();
 
-                    PreparedStatement stm = connection.prepareStatement(" UPDATE student SET full_name=?, dob=?, address=? WHERE student_id=? ");
+                    PreparedStatement stm = connection.prepareStatement(" UPDATE teacher SET name=?, address=?, contact=? WHERE teacher_code=? ");
 
-                    stm.setString( 2, student.getFullName() );
-                    stm.setObject( 3, student.getDateOfBirth() );
-                    stm.setString( 4, student.getAddress() );
-                    stm.setString( 1, student.getStudentId() );
+                    stm.setString( 1, teacher.getName() );
+                    stm.setObject( 2, teacher.getAddress() );
+                    stm.setString( 3, teacher.getContact() );
+                    stm.setString( 4, teacher.getCode() );
 
                     return stm.executeUpdate() > 0;
 
                 }
 
 
-                // find all student
-                public ArrayList<Student> findAllStudents (String searchText) throws SQLException,ClassNotFoundException   {
+                // find all teachers
+                public ArrayList<Teacher> findAllTeachers (String searchText) throws SQLException,ClassNotFoundException   {
 
                     searchText = "%" + searchText + "%";
 
                     Connection connection = DbConnection.getInstance().getConnection();
 
-                    PreparedStatement stm = connection.prepareStatement(" SELECT * FROM student WHERE full_name LIKE ? OR  address LIKE ?");
+                    PreparedStatement stm = connection.prepareStatement(" SELECT * FROM teacher WHERE name LIKE ? OR  address LIKE ?");
                     stm.setString( 1, searchText );
                     stm.setObject( 2, searchText );
 
                     ResultSet rst = stm.executeQuery();
 
-                    ArrayList<Student> studentsList = new ArrayList<>(); // create array list for save students
+                    ArrayList<Teacher> teacherList = new ArrayList<>(); // create array list for save teacher
 
 
 
                     while ( rst.next() ) {
-                        studentsList.add( new Student (
+                        teacherList.add( new Teacher (
                                 rst.getString(1),
                                 rst.getString(2),
-                                rst.getDate(3),
+                                rst.getString(3),
                                 rst.getString(4)
                         ));
                     }
 
-                    return studentsList;
+                    return teacherList;
 
                 }
 
 
-                // Delete student
-                public boolean deleteStudent(String studentId) throws SQLException,ClassNotFoundException   {
+                // Delete teacher
+                public boolean deleteTeacher (String teacherId) throws SQLException,ClassNotFoundException   {
 
                     Connection connection = DbConnection.getInstance().getConnection();
 
-                    PreparedStatement stm = connection.prepareStatement(" DELETE FROM student WHERE student_id=? ");
-                    stm.setString( 1, studentId );
+                    PreparedStatement stm = connection.prepareStatement(" DELETE FROM teacher WHERE teacher_code=? ");
+                    stm.setString( 1, teacherId );
 
                     return stm.executeUpdate() > 0;
 
