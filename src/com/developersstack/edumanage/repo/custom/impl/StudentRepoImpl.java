@@ -2,6 +2,7 @@ package com.developersstack.edumanage.repo.custom.impl;
 
 import com.developersstack.edumanage.db.DbConnection;
 import com.developersstack.edumanage.entity.Student;
+import com.developersstack.edumanage.repo.CrudUtil;
 import com.developersstack.edumanage.repo.custom.StudentRepo;
 
 import java.sql.Connection;
@@ -14,7 +15,7 @@ public class StudentRepoImpl implements StudentRepo {
 
     @Override
     public boolean saveStudent(Student student) throws SQLException,ClassNotFoundException   {
-
+    /*
         Connection connection = DbConnection.getInstance().getConnection();
 
         PreparedStatement stm = connection.prepareStatement(" INSERT INTO student VALUES (?, ?, ?, ?)");
@@ -24,7 +25,14 @@ public class StudentRepoImpl implements StudentRepo {
         stm.setObject( 3, student.getDateOfBirth() );
         stm.setString( 4, student.getAddress() );
 
-        return stm.executeUpdate() > 0;
+        return stm.executeUpdate() > 0;*/
+
+        return CrudUtil.execute( " INSERT INTO student VALUES (?, ?, ?, ?) ",
+                                                                                    student.getStudentId(),
+                                                                                    student.getFullName(),
+                                                                                    student.getDateOfBirth(),
+                                                                                    student.getAddress()
+                                );
 
     }
 
