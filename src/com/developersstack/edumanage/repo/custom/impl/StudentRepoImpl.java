@@ -16,7 +16,7 @@ public class StudentRepoImpl implements StudentRepo {
     @Override
     public boolean saveStudent(Student student) throws SQLException,ClassNotFoundException   {
     /*
-        Connection connection = DbConnection.getInstance().getConnection();
+       Connection connection = DbConnection.getInstance().getConnection();
 
         PreparedStatement stm = connection.prepareStatement(" INSERT INTO student VALUES (?, ?, ?, ?)");
 
@@ -39,7 +39,7 @@ public class StudentRepoImpl implements StudentRepo {
     @Override
     public String findStudentLastId () throws SQLException,ClassNotFoundException   {
 
-        Connection connection = DbConnection.getInstance().getConnection();
+        /*Connection connection = DbConnection.getInstance().getConnection();
 
         PreparedStatement stm = connection.prepareStatement(" SELECT student_id FROM student ORDER BY CAST(SUBSTRING(student_id, 3) AS UNSIGNED) DESC LIMIT 1 ");
 
@@ -49,19 +49,41 @@ public class StudentRepoImpl implements StudentRepo {
             return rst.getString( 1 );
         }
 
+        return "S-1";*/
+
+        ResultSet rst = CrudUtil.execute( " SELECT student_id FROM student ORDER BY CAST(SUBSTRING(student_id, 3) AS UNSIGNED) DESC LIMIT 1 ");
+
+        if ( rst.next() ) {
+            return rst.getString( 1 );
+        }
+
         return "S-1";
+
 
     }
 
     @Override
     public Student findStudent (String student_id) throws SQLException,ClassNotFoundException   {
 
-        Connection connection = DbConnection.getInstance().getConnection();
+        /*Connection connection = DbConnection.getInstance().getConnection();
 
         PreparedStatement stm = connection.prepareStatement(" SELECT * FROM student WHERE student_id=? ");
         stm.setString(1, student_id);
 
         ResultSet rst = stm.executeQuery();
+
+        if ( rst.next() ) {
+            return new Student(
+                    rst.getString(1),
+                    rst.getString(2),
+                    rst.getDate(3),
+                    rst.getString(4)
+            );
+        }
+
+        return null;*/
+
+        ResultSet rst = CrudUtil.execute( " SELECT * FROM student WHERE student_id=? ", student_id);
 
         if ( rst.next() ) {
             return new Student(
@@ -79,7 +101,7 @@ public class StudentRepoImpl implements StudentRepo {
     @Override
     public boolean updateStudent(Student student) throws SQLException,ClassNotFoundException   {
 
-        Connection connection = DbConnection.getInstance().getConnection();
+       /* Connection connection = DbConnection.getInstance().getConnection();
 
         PreparedStatement stm = connection.prepareStatement(" UPDATE student SET full_name=?, dob=?, address=? WHERE student_id=? ");
 
@@ -89,7 +111,14 @@ public class StudentRepoImpl implements StudentRepo {
         stm.setString( 1, student.getStudentId() );
 
         return stm.executeUpdate() > 0;
+*/
 
+        return CrudUtil.execute( "UPDATE student SET full_name=?, dob=?, address=? WHERE student_id=?",
+                                                                                                            student.getFullName(),
+                                                                                                            student.getDateOfBirth(),
+                                                                                                            student.getAddress(),
+                                                                                                            student.getStudentId()
+                        );
     }
 
     @Override
@@ -97,6 +126,7 @@ public class StudentRepoImpl implements StudentRepo {
 
         searchText = "%" + searchText + "%";
 
+        /*
         Connection connection = DbConnection.getInstance().getConnection();
 
         PreparedStatement stm = connection.prepareStatement(" SELECT * FROM student WHERE full_name LIKE ? OR  address LIKE ?");
@@ -119,18 +149,39 @@ public class StudentRepoImpl implements StudentRepo {
         }
 
         return studentsList;
+        */
+
+        ResultSet rst = CrudUtil.execute( " SELECT * FROM student WHERE full_name LIKE ? OR  address LIKE ? ", searchText, searchText);
+
+        ArrayList<Student> studentsList = new ArrayList<>(); // create array list for save students
+
+
+
+        while ( rst.next() ) {
+            studentsList.add( new Student (
+                    rst.getString(1),
+                    rst.getString(2),
+                    rst.getDate(3),
+                    rst.getString(4)
+            ));
+        }
+
+        return studentsList;
+
 
     }
 
     @Override
     public boolean deleteStudent(String studentId) throws SQLException,ClassNotFoundException   {
 
-        Connection connection = DbConnection.getInstance().getConnection();
+        /*Connection connection = DbConnection.getInstance().getConnection();
 
         PreparedStatement stm = connection.prepareStatement(" DELETE FROM student WHERE student_id=? ");
         stm.setString( 1, studentId );
 
-        return stm.executeUpdate() > 0;
+        return stm.executeUpdate() > 0;*/
+
+        return CrudUtil.execute( "DELETE FROM student WHERE student_id=?", studentId );
 
     }
 }
