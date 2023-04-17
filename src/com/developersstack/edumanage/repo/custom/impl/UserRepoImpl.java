@@ -7,11 +7,12 @@ import com.developersstack.edumanage.repo.custom.UserRepo;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class UserRepoImpl implements UserRepo {
 
     @Override
-    public boolean saveUser(User user) throws SQLException,ClassNotFoundException   {
+    public boolean save(User user) throws SQLException,ClassNotFoundException   {
 
         /*Connection connection = DbConnection.getInstance().getConnection();
 
@@ -34,7 +35,7 @@ public class UserRepoImpl implements UserRepo {
     }
 
     @Override
-    public User loginUser( String email) throws SQLException,ClassNotFoundException   {
+    public User find( String email) throws SQLException,ClassNotFoundException   {
 
         /*Connection connection = DbConnection.getInstance().getConnection();
 
@@ -62,6 +63,21 @@ public class UserRepoImpl implements UserRepo {
 
         return null;
 
+    }
+
+    @Override
+    public boolean update(User user) throws SQLException, ClassNotFoundException {
+        return false;
+    }
+
+    @Override
+    public boolean delete(String s) throws SQLException, ClassNotFoundException {
+        return false;
+    }
+
+    @Override
+    public ArrayList<User> findAll() {
+        return null;
     }
 
 }
