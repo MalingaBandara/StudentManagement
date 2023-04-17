@@ -1,40 +1,14 @@
 package com.developersstack.edumanage.repo.custom.impl;
 
-import com.developersstack.edumanage.db.DbConnection;
 import com.developersstack.edumanage.entity.Student;
 import com.developersstack.edumanage.repo.CrudUtil;
 import com.developersstack.edumanage.repo.custom.StudentRepo;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class StudentRepoImpl implements StudentRepo {
-
-    @Override
-    public boolean saveStudent(Student student) throws SQLException,ClassNotFoundException   {
-    /*
-       Connection connection = DbConnection.getInstance().getConnection();
-
-        PreparedStatement stm = connection.prepareStatement(" INSERT INTO student VALUES (?, ?, ?, ?)");
-
-        stm.setString( 1, student.getStudentId() );
-        stm.setString( 2, student.getFullName() );
-        stm.setObject( 3, student.getDateOfBirth() );
-        stm.setString( 4, student.getAddress() );
-
-        return stm.executeUpdate() > 0;*/
-
-        return CrudUtil.execute( " INSERT INTO student VALUES (?, ?, ?, ?) ",
-                                                                                    student.getStudentId(),
-                                                                                    student.getFullName(),
-                                                                                    student.getDateOfBirth(),
-                                                                                    student.getAddress()
-                                );
-
-    }
 
     @Override
     public String findStudentLastId () throws SQLException,ClassNotFoundException   {
@@ -59,66 +33,6 @@ public class StudentRepoImpl implements StudentRepo {
 
         return "S-1";
 
-
-    }
-
-    @Override
-    public Student findStudent (String student_id) throws SQLException,ClassNotFoundException   {
-
-        /*Connection connection = DbConnection.getInstance().getConnection();
-
-        PreparedStatement stm = connection.prepareStatement(" SELECT * FROM student WHERE student_id=? ");
-        stm.setString(1, student_id);
-
-        ResultSet rst = stm.executeQuery();
-
-        if ( rst.next() ) {
-            return new Student(
-                    rst.getString(1),
-                    rst.getString(2),
-                    rst.getDate(3),
-                    rst.getString(4)
-            );
-        }
-
-        return null;*/
-
-        ResultSet rst = CrudUtil.execute( " SELECT * FROM student WHERE student_id=? ", student_id);
-
-        if ( rst.next() ) {
-            return new Student(
-                    rst.getString(1),
-                    rst.getString(2),
-                    rst.getDate(3),
-                    rst.getString(4)
-            );
-        }
-
-        return null;
-
-    }
-
-    @Override
-    public boolean updateStudent(Student student) throws SQLException,ClassNotFoundException   {
-
-       /* Connection connection = DbConnection.getInstance().getConnection();
-
-        PreparedStatement stm = connection.prepareStatement(" UPDATE student SET full_name=?, dob=?, address=? WHERE student_id=? ");
-
-        stm.setString( 2, student.getFullName() );
-        stm.setObject( 3, student.getDateOfBirth() );
-        stm.setString( 4, student.getAddress() );
-        stm.setString( 1, student.getStudentId() );
-
-        return stm.executeUpdate() > 0;
-*/
-
-        return CrudUtil.execute( "UPDATE student SET full_name=?, dob=?, address=? WHERE student_id=?",
-                                                                                                            student.getFullName(),
-                                                                                                            student.getDateOfBirth(),
-                                                                                                            student.getAddress(),
-                                                                                                            student.getStudentId()
-                        );
     }
 
     @Override
@@ -167,21 +81,51 @@ public class StudentRepoImpl implements StudentRepo {
         }
 
         return studentsList;
-
-
     }
 
     @Override
-    public boolean deleteStudent(String studentId) throws SQLException,ClassNotFoundException   {
+    public boolean save(Student student) throws SQLException, ClassNotFoundException {
+        return CrudUtil.execute( " INSERT INTO student VALUES (?, ?, ?, ?) ",
+                student.getStudentId(),
+                student.getFullName(),
+                student.getDateOfBirth(),
+                student.getAddress()
+        );
+    }
 
-        /*Connection connection = DbConnection.getInstance().getConnection();
+    @Override
+    public boolean update(Student student) throws SQLException, ClassNotFoundException {
+        return CrudUtil.execute( "UPDATE student SET full_name=?, dob=?, address=? WHERE student_id=?",
+                student.getFullName(),
+                student.getDateOfBirth(),
+                student.getAddress(),
+                student.getStudentId()
+        );
+    }
 
-        PreparedStatement stm = connection.prepareStatement(" DELETE FROM student WHERE student_id=? ");
-        stm.setString( 1, studentId );
+    @Override
+    public boolean delete(String s) throws SQLException, ClassNotFoundException {
+        return CrudUtil.execute( "DELETE FROM student WHERE student_id=?", s );
+    }
 
-        return stm.executeUpdate() > 0;*/
+    @Override
+    public Student find(String s) throws SQLException, ClassNotFoundException {
+        ResultSet rst = CrudUtil.execute( " SELECT * FROM student WHERE student_id=? ", s);
 
-        return CrudUtil.execute( "DELETE FROM student WHERE student_id=?", studentId );
+        if ( rst.next() ) {
+            return new Student(
+                    rst.getString(1),
+                    rst.getString(2),
+                    rst.getDate(3),
+                    rst.getString(4)
+            );
+        }
 
+        return null;
+    }
+
+    @Override
+    public ArrayList<Student> findAll() {
+        return null;
     }
 }

@@ -11,28 +11,58 @@ import java.util.ArrayList;
 
 public class TeacherRepoImpl implements TeacherRepo {
 
+
     @Override
-    public boolean saveTeacher(Teacher teacher) throws SQLException,ClassNotFoundException   {
-
-       /* Connection connection = DbConnection.getInstance().getConnection();
-
-        PreparedStatement stm = connection.prepareStatement(" INSERT INTO teacher VALUES (?, ?, ?, ?)");
-
-        stm.setString( 1, teacher.getCode() );
-        stm.setString( 2, teacher.getName() );
-        stm.setObject( 3, teacher.getAddress() );
-        stm.setString( 4, teacher.getContact() );
-
-        return stm.executeUpdate() > 0;*/
-
+    public boolean save(Teacher teacher) throws SQLException, ClassNotFoundException {
         return CrudUtil.execute( " INSERT INTO teacher VALUES (?, ?, ?, ?)",
-                                                                                    teacher.getCode(),
-                                                                                    teacher.getName(),
-                                                                                    teacher.getAddress(),
-                                                                                    teacher.getContact()
-                        );
+                teacher.getCode(),
+                teacher.getName(),
+                teacher.getAddress(),
+                teacher.getContact()
+        );
+    }
+
+    @Override
+    public boolean update(Teacher teacher) throws SQLException, ClassNotFoundException {
+
+        return CrudUtil.execute( " UPDATE teacher SET name=?, address=?, contact=? WHERE teacher_code=? ",
+                teacher.getName(),
+                teacher.getAddress(),
+                teacher.getContact(),
+                teacher.getCode()
+        );
 
     }
+
+    @Override
+    public boolean delete(String s) throws SQLException, ClassNotFoundException {
+        return CrudUtil.execute( "DELETE FROM teacher WHERE teacher_code=?", s );
+
+    }
+
+    @Override
+    public Teacher find(String s) throws SQLException, ClassNotFoundException {
+
+        ResultSet rst = CrudUtil.execute( " SELECT * FROM teacher WHERE teacher_code=? ", s );
+
+        if ( rst.next() ) {
+            return new Teacher(
+                    rst.getString(1),
+                    rst.getString(2),
+                    rst.getString(3),
+                    rst.getString(4)
+            );
+        }
+
+        return null;
+
+    }
+
+    @Override
+    public ArrayList<Teacher> findAll() {
+        return null;
+    }
+
 
     @Override
     public String findTeacherLastId () throws SQLException,ClassNotFoundException   {
@@ -59,64 +89,6 @@ public class TeacherRepoImpl implements TeacherRepo {
 
     }
 
-    @Override
-    public Teacher findTeacher (String teacherId) throws SQLException,ClassNotFoundException   {
-
-       /* Connection connection = DbConnection.getInstance().getConnection();
-
-        PreparedStatement stm = connection.prepareStatement(" SELECT * FROM teacher WHERE teacher_code=? ");
-        stm.setString(1, teacherId);
-
-        ResultSet rst = stm.executeQuery();
-
-        if ( rst.next() ) {
-            return new Teacher(
-                    rst.getString(1),
-                    rst.getString(2),
-                    rst.getString(3),
-                    rst.getString(4)
-            );
-        }
-
-        return null;*/
-
-        ResultSet rst = CrudUtil.execute( " SELECT * FROM teacher WHERE teacher_code=? ", teacherId );
-
-        if ( rst.next() ) {
-            return new Teacher(
-                    rst.getString(1),
-                    rst.getString(2),
-                    rst.getString(3),
-                    rst.getString(4)
-            );
-        }
-
-        return null;
-
-    }
-
-    @Override
-    public boolean updateTeachr(Teacher teacher) throws SQLException,ClassNotFoundException   {
-
-        /*Connection connection = DbConnection.getInstance().getConnection();
-
-        PreparedStatement stm = connection.prepareStatement(" UPDATE teacher SET name=?, address=?, contact=? WHERE teacher_code=? ");
-
-        stm.setString( 1, teacher.getName() );
-        stm.setObject( 2, teacher.getAddress() );
-        stm.setString( 3, teacher.getContact() );
-        stm.setString( 4, teacher.getCode() );
-
-        return stm.executeUpdate() > 0;*/
-
-        return CrudUtil.execute( " UPDATE teacher SET name=?, address=?, contact=? WHERE teacher_code=? ",
-                                                                                                                teacher.getName(),
-                                                                                                                teacher.getAddress(),
-                                                                                                                teacher.getContact(),
-                                                                                                                teacher.getCode()
-                );
-
-    }
 
     @Override
     public ArrayList<Teacher> findAllTeachers (String searchText) throws SQLException,ClassNotFoundException   {
@@ -163,20 +135,6 @@ public class TeacherRepoImpl implements TeacherRepo {
         }
 
         return teacherList;
-
-    }
-
-    @Override
-    public boolean deleteTeacher (String teacherId) throws SQLException,ClassNotFoundException   {
-
-        /*Connection connection = DbConnection.getInstance().getConnection();
-
-        PreparedStatement stm = connection.prepareStatement(" DELETE FROM teacher WHERE teacher_code=? ");
-        stm.setString( 1, teacherId );
-
-        return stm.executeUpdate() > 0;*/
-
-        return CrudUtil.execute( "DELETE FROM teacher WHERE teacher_code=?", teacherId );
 
     }
 }
